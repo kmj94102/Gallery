@@ -2,6 +2,7 @@ package com.example.gallery.util
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import com.example.gallery.BaseActivity
 import com.example.gallery.data.GalleryItem
 import com.example.gallery.databinding.ActivityMainBinding
@@ -35,11 +36,21 @@ class GalleryActivity : BaseActivity<GalleryViewModel>() {
     }
 
     private fun initViews() = with(binding) {
-        recyclerView.adapter = GalleryAdapter()
+        recyclerView.adapter = GalleryAdapter {
+            Log.e("+++++", "count $it")
+        }
+
+        textViewComplete.setOnClickListener {
+            getSelectList()?.forEach {
+                Log.e("++++", "${it.displayName} / ${it.contentUri}")
+            }
+        }
     }
 
     private fun setGalleryItems(list: List<GalleryItem>) = with(binding.recyclerView) {
-        (adapter as GalleryAdapter).submitList(list)
+        (adapter as? GalleryAdapter)?.submitList(list)
     }
+
+    private fun getSelectList() = (binding.recyclerView.adapter as? GalleryAdapter)?.getSelectItemList()
 
 }

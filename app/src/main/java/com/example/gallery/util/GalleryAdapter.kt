@@ -10,7 +10,9 @@ import com.bumptech.glide.Glide
 import com.example.gallery.data.GalleryItem
 import com.example.gallery.databinding.ItemGalleryItemBinding
 
-class GalleryAdapter : ListAdapter<GalleryItem, GalleryAdapter.ViewHolder>(diffUtil) {
+class GalleryAdapter(private val itemCountListener : (Int) -> Unit) : ListAdapter<GalleryItem, GalleryAdapter.ViewHolder>(diffUtil) {
+
+    private val selectItemList = mutableListOf<GalleryItem>()
 
     inner class ViewHolder(private val binding : ItemGalleryItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(galleryItem: GalleryItem) {
@@ -24,11 +26,22 @@ class GalleryAdapter : ListAdapter<GalleryItem, GalleryAdapter.ViewHolder>(diffU
                 setOnCheckedChangeListener { _, isChecked ->
                     binding.viewBackground.isVisible = isChecked
                     currentList[bindingAdapterPosition].isChecked = isChecked
+
+                    if (isChecked) {
+                        selectItemList.add(galleryItem)
+                    } else {
+                        selectItemList.remove(galleryItem)
+                    }
+
+                    itemCountListener(selectItemList.size)
                 }
             }
 
         }
     }
+
+    // 정렬 할 필요 있음
+    fun getSelectItemList() = selectItemList
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(ItemGalleryItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
