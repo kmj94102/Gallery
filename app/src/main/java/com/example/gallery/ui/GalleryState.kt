@@ -1,4 +1,4 @@
-package com.example.gallery.util
+package com.example.gallery.ui
 
 import com.example.gallery.data.GalleryItem
 

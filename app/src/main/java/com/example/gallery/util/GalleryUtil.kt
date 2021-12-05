@@ -4,30 +4,14 @@ import android.app.Application
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.example.gallery.BaseViewModel
 import com.example.gallery.data.GalleryItem
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import java.util.*
 
-class GalleryViewModel(
-    private val application: Application
-) : BaseViewModel() {
-
-    private val _stateLiveData = MutableLiveData<GalleryState>(GalleryState.Uninitialized)
-    val stateLiveData : LiveData<GalleryState>
-        get() = _stateLiveData
+class GalleryUtil(private val application: Application) {
 
     private val imageList = mutableListOf<GalleryItem>()
 
-    override fun fetchData(): Job = viewModelScope.launch {
-        init()
-    }
-
-    private fun init(){
+    fun getImageList() : List<GalleryItem> {
         val projection = arrayOf(
             MediaStore.Images.Media._ID,
             MediaStore.Images.Media.DISPLAY_NAME,
@@ -73,7 +57,7 @@ class GalleryViewModel(
             }
         }
 
-        _stateLiveData.postValue(GalleryState.ShowGalleryList(imageList))
+        return imageList
     }
 
 }

@@ -1,4 +1,4 @@
-package com.example.gallery.util
+package com.example.gallery.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,17 +9,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.gallery.data.GalleryItem
 import com.example.gallery.databinding.ItemGalleryItemBinding
+import java.util.ArrayList
 
-class GalleryAdapter(private val itemCountListener : (Int) -> Unit) : ListAdapter<GalleryItem, GalleryAdapter.ViewHolder>(diffUtil) {
-
-    private val selectItemList = mutableListOf<GalleryItem>()
+class GalleryAdapter(
+    private val itemClickListener : (Int) -> Unit,
+    private val itemCountListener : (Int) -> Unit
+) : ListAdapter<GalleryItem, GalleryAdapter.ViewHolder>(diffUtil) {
 
     inner class ViewHolder(private val binding : ItemGalleryItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(galleryItem: GalleryItem) {
-            Glide
-                .with(binding.imageView.context)
-                .load(galleryItem.contentUri)
-                .into(binding.imageView)
+
+            binding.root.setOnClickListener {
+                itemClickListener(bindingAdapterPosition)
+            }
+
+            binding.viewBackground.isVisible = galleryItem.isChecked
 
             binding.checkBox.apply {
                 isChecked = galleryItem.isChecked
@@ -27,21 +31,29 @@ class GalleryAdapter(private val itemCountListener : (Int) -> Unit) : ListAdapte
                     binding.viewBackground.isVisible = isChecked
                     currentList[bindingAdapterPosition].isChecked = isChecked
 
-                    if (isChecked) {
-                        selectItemList.add(galleryItem)
-                    } else {
-                        selectItemList.remove(galleryItem)
-                    }
-
-                    itemCountListener(selectItemList.size)
+                    itemCountListener(getSelectItemList().size)
                 }
             }
+
+            Glide
+                .with(binding.imageView.context)
+                .load(galleryItem.contentUri)
+                .into(binding.imageView)
 
         }
     }
 
-    // 정렬 할 필요 있음
-    fun getSelectItemList() = selectItemList
+    fun getSelectItemList() = currentList.filter { it.isChecked }
+
+    fun setSelectItemList(list: ArrayList<GalleryItem>?) {
+        list?.forEach { item ->
+            val index = currentList.indexOfFirst { it.id == item.id }
+            if (currentList[index].isChecked != item.isChecked){
+                currentList[index].isChecked = item.isChecked
+                notifyItemChanged(index)
+            }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(ItemGalleryItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))

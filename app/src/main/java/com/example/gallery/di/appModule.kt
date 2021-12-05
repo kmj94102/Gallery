@@ -1,6 +1,6 @@
 package com.example.gallery.di
 
-import com.example.gallery.util.GalleryViewModel
+import com.example.gallery.ui.GalleryViewModel
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel

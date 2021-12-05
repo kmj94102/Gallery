@@ -72,4 +72,7 @@ dependencies {
     // PhotoView : https://github.com/Baseflow/PhotoView
     implementation 'com.github.chrisbanes:PhotoView:2.0.0'
 
+    // Ted Permission : https://github.com/ParkSangGwon/TedPermission
+    implementation 'io.github.ParkSangGwon:tedpermission-normal:3.3.0'
+
 }
