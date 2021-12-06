@@ -13,3 +13,5 @@ data class GalleryItem (
     val contentUri : Uri,
     var isChecked : Boolean = false
 ) : Parcelable
+
+// test
